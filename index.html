@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <main class="container w-full">
+      <div
+        class="filter-container flex flex-1 border border-gray-200 text-sm divide-x divide-gray-200"
+      >
+        <div class="filter-item flex-1 flex flex-col">
+          <label
+            for="dropdown"
+            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium"
+            >이관글 번호</label
+          >
+          <select id="dropdown" class="block w-full px-3 py-2"></select>
+        </div>
+        <div class="filter-item flex-1 flex flex-col">
+          <label
+            for="date"
+            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium"
+            >이관글 발송 날짜</label
+          >
+          <input type="date" id="date" class="block w-full px-3 py-2" />
+        </div>
+        <div class="filter-item flex-1 flex flex-col">
+          <label
+            for="request-period"
+            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium"
+            >확인요청 접수 기간</label
+          >
+          <p id="request-period" class="block w-full px-3 py-2"></p>
+        </div>
+        <div class="filter-item flex-1 flex flex-col">
+          <label
+            for="required-evidence"
+            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium"
+            >필요 증빙</label
+          >
+          <p id="required-evidence" class="block w-full px-3 py-2"></p>
+        </div>
+        <div class="filter-item flex-1 flex flex-col">
+          <label
+            for="related-guide"
+            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium"
+            >관련 가이드</label
+          >
+          <p id="related-guide" class="block w-full px-3 py-2"></p>
+        </div>
+      </div>
+      <div class="table-container mt-4">
+        <table
+          id="rows-table"
+          class="min-w-full table-fixed border border-gray-200 border-collapse text-sm"
+        ></table>
+      </div>
+    </main>
+    <script type="module">
+      import { DROP_DOWN_LIST, ROWS } from "./data.js";
+      import {
+        renderDropdown,
+        renderTable,
+        getRequestPeriodText,
+        createGuideLink,
+        createEvidenceList,
+        filterRowsByNo,
+      } from "./utils.js";
+
+      const dropdown = document.getElementById("dropdown");
+      const table = document.getElementById("rows-table");
+      const dateInput = document.getElementById("date");
+      const requestPeriodEl = document.getElementById("request-period");
+      const requiredEvidenceEl = document.getElementById("required-evidence");
+      const relatedGuideEl = document.getElementById("related-guide");
+
+      const updateRequestPeriod = () => {
+        const value = dateInput.value;
+        if (!value) {
+          requestPeriodEl.textContent = "";
+          return;
+        }
+
+        const selectedDate = new Date(value);
+        if (Number.isNaN(selectedDate.getTime())) {
+          requestPeriodEl.textContent = "";
+          return;
+        }
+
+        const label = getRequestPeriodText(selectedDate);
+        requestPeriodEl.textContent = label;
+      };
+
+      const updateConditionalFromRow = (row) => {
+        // 초기화
+        relatedGuideEl.innerHTML = "";
+        requiredEvidenceEl.innerHTML = "";
+
+        if (!row) {
+          return;
+        }
+
+        // 관련 가이드
+        const guideEl = createGuideLink(row.guide, row.guideLink);
+        if (guideEl) {
+          relatedGuideEl.appendChild(guideEl);
+        }
+
+        // 필요 증빙
+        const evidenceListEl = createEvidenceList(row.evidenceList);
+        if (evidenceListEl) {
+          requiredEvidenceEl.appendChild(evidenceListEl);
+        } else {
+          requiredEvidenceEl.textContent = "-";
+        }
+      };
+
+      const handleDropdownChange = () => {
+        const value = dropdown.value;
+        const selectedNo = Number(value);
+
+        if (!value || Number.isNaN(selectedNo)) {
+          renderTable(table, ROWS);
+          updateConditionalFromRow(null);
+          return;
+        }
+
+        const filteredRows = filterRowsByNo(ROWS, selectedNo);
+        renderTable(table, filteredRows);
+        updateConditionalFromRow(filteredRows[0] ?? null);
+      };
+
+      dateInput.addEventListener("change", updateRequestPeriod);
+      dropdown.addEventListener("change", handleDropdownChange);
+
+      renderDropdown(dropdown, DROP_DOWN_LIST);
+      renderTable(table, ROWS);
+      updateRequestPeriod();
+      updateConditionalFromRow(null);
+    </script>
+  </body>
+</html>
