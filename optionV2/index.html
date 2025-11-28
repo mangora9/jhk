@@ -3,59 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>이관글 관리</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="cursor-default select-none">
-    <main class="container w-full">
-      <div
-        class="filter-container flex flex-1 border border-gray-200 text-sm divide-x divide-gray-200"
-      >
-        <div class="filter-item flex-1 flex flex-col">
-          <label
-            for="dropdown"
-            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium cursor-default select-none"
-            >이관글 번호</label
-          >
-          <select id="dropdown" class="block w-full px-3 py-2"></select>
+  <body>
+    <main class="container">
+      <div class="filter-container">
+        <div class="filter-item">
+          <label for="dropdown">이관글 번호</label>
+          <select id="dropdown"></select>
         </div>
-        <div class="filter-item flex-1 flex flex-col">
-          <label
-            for="date"
-            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium cursor-default select-none"
-            >이관글 발송 날짜</label
-          >
-          <input type="date" id="date" class="block w-full px-3 py-2" />
+        <div class="filter-item">
+          <label for="date">이관글 발송 날짜</label>
+          <input type="date" id="date" />
         </div>
-        <div class="filter-item flex-1 flex flex-col">
-          <label
-            for="request-period"
-            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium cursor-default select-none"
-            >쿠팡확인요청 접수 기간</label
-          >
-          <p id="request-period" class="block w-full px-3 py-2 cursor-default select-none"></p>
+        <div class="filter-item">
+          <label for="request-period">쿠팡확인요청 접수 기간</label>
+          <p id="request-period"></p>
         </div>
-        <div class="filter-item flex-1 flex flex-col">
-          <label
-            for="required-evidence"
-            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium cursor-default select-none"
-            >필요 증빙</label
-          >
-          <p id="required-evidence" class="block w-full px-3 py-2 cursor-default select-none"></p>
+        <div class="filter-item">
+          <label for="required-evidence">필요 증빙</label>
+          <p id="required-evidence"></p>
         </div>
-        <div class="filter-item flex-1 flex flex-col">
-          <label
-            for="related-guide"
-            class="block bg-gray-50 border-b border-gray-200 px-3 py-1 text-xs font-medium cursor-default select-none"
-            >관련 가이드</label
-          >
-          <p id="related-guide" class="block w-full px-3 py-2 cursor-default select-none"></p>
+        <div class="filter-item">
+          <label for="related-guide">관련 가이드</label>
+          <p id="related-guide"></p>
         </div>
       </div>
-      <div class="table-container mt-4">
-        <table
-          id="rows-table"
-          class="min-w-full table-fixed border border-gray-200 border-collapse text-sm"
-        ></table>
+      <div class="table-container">
+        <table id="rows-table" class="data-table"></table>
       </div>
     </main>
     <script type="module">
@@ -76,6 +52,7 @@
       const requiredEvidenceEl = document.getElementById("required-evidence");
       const relatedGuideEl = document.getElementById("related-guide");
 
+      // 쿠팡확인요청 접수 기간 업데이트
       const updateRequestPeriod = () => {
         const value = dateInput.value;
         if (!value) {
@@ -93,6 +70,7 @@
         requestPeriodEl.textContent = label;
       };
 
+      // 필요 증빙 및 관련 가이드 업데이트
       const updateConditionalFromRow = (row) => {
         // 초기화
         relatedGuideEl.innerHTML = "";
@@ -117,6 +95,7 @@
         }
       };
 
+      // 이관글 번호 선택 시 필터링 및 업데이트
       const handleDropdownChange = () => {
         const value = dropdown.value;
         const selectedNo = Number(value);
@@ -142,3 +121,4 @@
     </script>
   </body>
 </html>
+

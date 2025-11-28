@@ -4,15 +4,15 @@ const createTableHeader = () => {
   const headerRow = document.createElement("tr");
 
   const headers = [
-    { text: "이관 번호", widthClass: "w-28" },
-    { text: "확인 필요 가이드", widthClass: "w-2/5" },
-    { text: "필요 증빙", widthClass: "w-2/5" },
+    { text: "이관 번호", className: "col-no" },
+    { text: "확인 필요 가이드", className: "col-guide" },
+    { text: "필요 증빙", className: "col-evidence" },
   ];
 
-  headers.forEach(({ text, widthClass }) => {
+  headers.forEach(({ text, className }) => {
     const th = document.createElement("th");
     th.textContent = text;
-    th.className = `border border-gray-200 bg-gray-50 px-3 py-2 text-left font-medium cursor-default select-none ${widthClass}`;
+    th.className = className;
     headerRow.appendChild(th);
   });
 
@@ -31,7 +31,7 @@ export const createGuideLink = (guide, guideLink) => {
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   a.textContent = guide;
-  a.className = "text-blue-600 hover:underline";
+  a.className = "link";
 
   return a;
 };
@@ -43,7 +43,7 @@ export const createEvidenceList = (evidenceList) => {
   }
 
   const ul = document.createElement("ul");
-  ul.className = "list-disc pl-5 space-y-1";
+  ul.className = "evidence-list";
 
   evidenceList.forEach(({ name, link }) => {
     const li = document.createElement("li");
@@ -52,7 +52,7 @@ export const createEvidenceList = (evidenceList) => {
     a.target = "_blank";
     a.rel = "noopener noreferrer";
     a.textContent = name;
-    a.className = "text-blue-600 hover:underline";
+    a.className = "link";
     li.appendChild(a);
     ul.appendChild(li);
   });
@@ -66,17 +66,14 @@ const createTableBody = (rows) => {
 
   rows.forEach((row) => {
     const tr = document.createElement("tr");
-    tr.className = "border-t border-gray-200";
 
     // 이관 번호
     const noTd = document.createElement("td");
     noTd.textContent = String(row.no);
-    noTd.className = "px-3 py-2 border border-gray-100 align-top cursor-default select-none";
     tr.appendChild(noTd);
 
     // 확인 필요 가이드 (링크)
     const guideTd = document.createElement("td");
-    guideTd.className = "px-3 py-2 border border-gray-100 align-top cursor-default select-none";
     const guideEl = createGuideLink(row.guide, row.guideLink);
     if (guideEl) {
       guideTd.appendChild(guideEl);
@@ -85,7 +82,6 @@ const createTableBody = (rows) => {
 
     // 필요 증빙
     const evidenceTd = document.createElement("td");
-    evidenceTd.className = "px-3 py-2 border border-gray-100 align-top cursor-default select-none";
 
     const evidenceListEl = createEvidenceList(row.evidenceList);
     if (evidenceListEl) {
@@ -174,3 +170,4 @@ export const getRequestPeriodText = (date, today = new Date()) => {
 
 // 이관글 번호 필터링
 export const filterRowsByNo = (rows, no) => rows.filter((row) => row.no === no);
+
